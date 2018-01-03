@@ -1,6 +1,7 @@
 /**
-  purpose: This program draws a spirograph using randomly generated(for curiousity)
-  values in the parametric equations of a hypocycloid.
+  purpose: This program draws a spirograph using randomly generated
+  values in the parametric equations of a hypocycloid. The result is
+  interesting to observe.
 
   @author Benjamin Obaje
 
@@ -32,34 +33,17 @@ void drawFilledCirlce(SDL_Renderer* r, int cx, int cy, double radius)
 		}
 }
 
-//draws an unfilled circle 
-//using the parametric equations of a circle for simplicity
-void drawCircle(SDL_Renderer* r, int x, int y)
-{
-	double cx, cy;
-	int cr = 250;
-	for (double i = -PI * 2; i < 0; i += 0.003)
-	{
-		SDL_SetRenderDrawColor(r, 127, 238, 255, 255);
-		cx = cr * cos(i);
-		cy = cr * sin(i);
-		SDL_RenderDrawPoint(r, cx + x/2, cy + y/2);
-		//drawFilledCirlce(r, cx+x*0.5, cy+y*0.5, 2);
-	}
-	SDL_RenderPresent(r);
-}
-
 void drawSpirograph(SDL_Renderer* ren)
 {
 	double x, y, r, t;
-	int R, a, cycles=72+(rand()%120+1);
-	R = 4+(rand() % 20+1);
-	r = 2+(rand() % 10/1.9f +1);
-	a = 2+(rand() % 9+1);
+	int R, a, cycles=70+(rand()%120+1);
+	R = 20;
+	r = 14;
+	a = 12;
 	t = cycles * -2 * PI;
 	
 	//determines the speed of the drawing(increase in angle)
-	double steps = 0.015;
+	double steps = 0.01;
 
 	SDL_Event e;
 	int red= rand() % 255, g= rand() % 255, b= rand()%255;
@@ -79,11 +63,10 @@ void drawSpirograph(SDL_Renderer* ren)
 		}//handle input while drawing
 		x = 10 * ((R - r)*cos((r / R) * t) + a*cos((1 - (r / R))*t));
 		y = 10 * ((R - r)*sin((r / R) * t) - a*sin((1 - (r / R))*t));
-		//SDL_RenderDrawPoint(ren, x + SCREENW / 2, y + SCREENH / 2);
-		drawFilledCirlce(ren, x + SCREENW / 2, y + SCREENH / 2, 1.24);
+		drawFilledCirlce(ren, x + SCREENW / 2, y + SCREENH / 2, 1.4);
 		SDL_RenderPresent(ren);
 		t += steps;
-	}
+	}//while
 }//drawSpirograph
 
 int main(int argc, char* args[])
@@ -139,41 +122,12 @@ int main(int argc, char* args[])
 					SDL_SetRenderDrawColor(r, 0, 0, 0, 255);
 					SDL_RenderClear(r);
 					break;
-				//case SDLK_d: drawCircle(r, SCREENW, SCREENH);	break;
 				case SDLK_a: drawSpirograph(r);	break;
 				default:
 					break;
 				}	
 			}// key down
-			{
-				if (e.type == SDL_MOUSEBUTTONDOWN)
-				{
-					int x, y;
-					//Get mouse position
-					SDL_GetMouseState(&x, &y);
-					SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
-					drawFilledCirlce(r, x, y, pointSize);
-					mouseHeld = true;
-				}//mouse click
-				if (e.type == SDL_MOUSEMOTION)
-				{
-					if (mouseHeld)
-					{
-						int x, y;
-						//Get mouse position
-						SDL_GetMouseState(&x, &y);
-						SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
-						drawFilledCirlce(r, x, y, pointSize);
-					}
-				}//mouse motion
-				if (e.type == SDL_MOUSEBUTTONUP) mouseHeld = false;
-				if (e.type == SDL_MOUSEWHEEL)
-				{
-					if (e.wheel.y == 1 && pointSize <= 25)  pointSize++;
-					else if (e.wheel.y == -1 && pointSize > 2) pointSize--;
-				}
-			}//handle continuous mouse input(click+movement)
-		}//hanlde input
+		}//handle input
 		//Update screen
 		SDL_RenderPresent(r);
 	}
